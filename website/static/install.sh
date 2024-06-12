@@ -5,7 +5,7 @@ themes_dir=""
 executable=""
 
 error() {
-    printf "\x1b[31m$1\e[0m\n"
+    printf "\e[31m$1\e[0m\n"
     exit 1
 }
 
@@ -14,7 +14,7 @@ info() {
 }
 
 warn() {
-    printf "⚠️  \x1b[33m$1\e[0m\n"
+    printf "⚠️  \e[33m$1\e[0m\n"
 }
 
 help() {
@@ -84,9 +84,13 @@ validate_install_directory() {
         error "Directory ${install_dir} does not exist, set a different directory and try again."
     fi
 
-    # check if we can write to the install directory
-    if [ ! -w $install_dir ]; then
+    # Check if sudo has write permission
+    if ! sudo test -w "$install_dir"; then
         error "Cannot write to ${install_dir}. Please set a different directory and try again: \n  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d {directory}"
+        
+    # Check if regular user has write permission
+    elif [ ! -w "$install_dir" ]; then
+        error "Cannot write to ${install_dir}. Please set a different directory and try again: \n  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d {directory} OR use sudo"
     fi
 
     # check if the directory is in the PATH
@@ -110,9 +114,13 @@ validate_themes_directory() {
         error "Directory ${install_dir} does not exist, set a different directory and try again."
     fi
 
-    # check if we can write to the install directory
-    if [ ! -w $install_dir ]; then
+    # Check if sudo has write permission
+    if ! sudo test -w "$install_dir"; then
         error "Cannot write to ${install_dir}. Please set a different directory and try again: \n  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d {directory}"
+        
+    # Check if regular user has write permission
+    elif [ ! -w "$install_dir" ]; then
+        error "Cannot write to ${install_dir}. Please set a different directory and try again: \n  curl -s https://ohmyposh.dev/install.sh | bash -s -- -d {directory} OR use sudo"
     fi
 
     # check if the directory is in the PATH
